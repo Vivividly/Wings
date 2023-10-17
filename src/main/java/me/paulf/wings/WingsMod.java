@@ -10,15 +10,21 @@ import me.paulf.wings.server.effect.WingsEffects;
 import me.paulf.wings.server.flight.Flight;
 import me.paulf.wings.server.item.WingsItems;
 import me.paulf.wings.server.sound.WingsSounds;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.DefaultedRegistry;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.Registry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
 
 @Mod(WingsMod.ID)
 public final class WingsMod {
@@ -26,19 +32,21 @@ public final class WingsMod {
 
     private static WingsMod INSTANCE;
 
-    public static final Registry<FlightApparatus> WINGS = new DefaultedRegistry<>(Names.NONE.toString(), RegistryKey.createRegistryKey(new ResourceLocation(ID, "wings")), Lifecycle.experimental());
+//    public static final Registry<FlightApparatus> WINGS = new DefaultedRegistry<>(Names.NONE.toString(), ResourceKey.createRegistryKey(new ResourceLocation(ID, "wings")), Lifecycle.experimental());
+    public static final DeferredRegister<FlightApparatus> WINGS = DeferredRegister.create(new ResourceLocation(ID, "wings"), ID);
+    public static final Supplier<IForgeRegistry<FlightApparatus>> WINGS_REGISTRY = WINGS.makeRegistry(RegistryBuilder::new);
 
-    public static final FlightApparatus NONE_WINGS = Registry.register(WINGS, Names.NONE, FlightApparatus.NONE);
-    public static final FlightApparatus ANGEL_WINGS = Registry.register(WINGS, Names.ANGEL, new SimpleFlightApparatus(WingsItemsConfig.ANGEL));
-	public static final FlightApparatus PARROT_WINGS = Registry.register(WINGS, Names.PARROT, new SimpleFlightApparatus(WingsItemsConfig.PARROT));
-    public static final FlightApparatus BAT_WINGS = Registry.register(WINGS, Names.BAT, new SimpleFlightApparatus(WingsItemsConfig.BAT));
-    public static final FlightApparatus BLUE_BUTTERFLY_WINGS = Registry.register(WINGS, Names.BLUE_BUTTERFLY, new SimpleFlightApparatus(WingsItemsConfig.BLUE_BUTTERFLY));
-    public static final FlightApparatus DRAGON_WINGS = Registry.register(WINGS, Names.DRAGON, new SimpleFlightApparatus(WingsItemsConfig.DRAGON));
-    public static final FlightApparatus EVIL_WINGS = Registry.register(WINGS, Names.EVIL, new SimpleFlightApparatus(WingsItemsConfig.EVIL));
-    public static final FlightApparatus FAIRY_WINGS = Registry.register(WINGS, Names.FAIRY, new SimpleFlightApparatus(WingsItemsConfig.FAIRY));
-    public static final FlightApparatus MONARCH_BUTTERFLY_WINGS = Registry.register(WINGS, Names.MONARCH_BUTTERFLY, new SimpleFlightApparatus(WingsItemsConfig.MONARCH_BUTTERFLY));
-    public static final FlightApparatus SLIME_WINGS = Registry.register(WINGS, Names.SLIME, new SimpleFlightApparatus(WingsItemsConfig.SLIME));
-    public static final FlightApparatus FIRE_WINGS = Registry.register(WINGS, Names.FIRE, new SimpleFlightApparatus(WingsItemsConfig.FIRE));
+    public static final RegistryObject<FlightApparatus> NONE_WINGS = WINGS.register(Names.NONE.getPath(), () -> FlightApparatus.NONE);
+    public static final RegistryObject<FlightApparatus> ANGEL_WINGS = WINGS.register(Names.ANGEL.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.ANGEL));
+	public static final RegistryObject<FlightApparatus> PARROT_WINGS = WINGS.register(Names.PARROT.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.PARROT));
+    public static final RegistryObject<FlightApparatus> BAT_WINGS = WINGS.register(Names.BAT.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.BAT));
+    public static final RegistryObject<FlightApparatus> BLUE_BUTTERFLY_WINGS = WINGS.register(Names.BLUE_BUTTERFLY.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.BLUE_BUTTERFLY));
+    public static final RegistryObject<FlightApparatus> DRAGON_WINGS = WINGS.register(Names.DRAGON.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.DRAGON));
+    public static final RegistryObject<FlightApparatus> EVIL_WINGS = WINGS.register(Names.EVIL.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.EVIL));
+    public static final RegistryObject<FlightApparatus> FAIRY_WINGS = WINGS.register(Names.FAIRY.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.FAIRY));
+    public static final RegistryObject<FlightApparatus> MONARCH_BUTTERFLY_WINGS = WINGS.register(Names.MONARCH_BUTTERFLY.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.MONARCH_BUTTERFLY));
+    public static final RegistryObject<FlightApparatus> SLIME_WINGS = WINGS.register(Names.SLIME.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.SLIME));
+    public static final RegistryObject<FlightApparatus> FIRE_WINGS = WINGS.register(Names.FIRE.getPath(), () -> new SimpleFlightApparatus(WingsItemsConfig.FIRE));
 
     private Proxy proxy;
 
@@ -49,6 +57,7 @@ public final class WingsMod {
         WingsItems.REG.register(bus);
         WingsSounds.REG.register(bus);
         WingsEffects.REG.register(bus);
+        WINGS.register(bus);
         this.proxy = DistExecutor.safeRunForDist(() -> ProxyInit::createClient, () -> ProxyInit::createServer);
         this.proxy.init(bus);
     }
@@ -63,7 +72,7 @@ public final class WingsMod {
         }
     }
 
-    public void addFlightListeners(PlayerEntity player, Flight instance) {
+    public void addFlightListeners(Player player, Flight instance) {
         this.requireProxy().addFlightListeners(player, instance);
     }
 
