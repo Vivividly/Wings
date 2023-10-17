@@ -3,9 +3,9 @@ package me.paulf.wings.server.net;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -80,7 +80,7 @@ public final class NetBuilder {
     }
 
     public <T extends Message> MessageBuilder<T, ServerMessageContext> serverbound(Supplier<T> factory) {
-        return new MessageBuilder<>(factory, new HandlerConsumerFactory<>(LogicalSide.SERVER, ServerMessageContext::new));
+        return new MessageBuilder<>(factory, new HandlerConsumerFactory<T, ServerMessageContext>(LogicalSide.SERVER, ServerMessageContext::new));
     }
 
     @SuppressWarnings("Convert2MethodRef")

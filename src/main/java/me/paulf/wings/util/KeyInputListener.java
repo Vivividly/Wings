@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableListMultimap;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public final class KeyInputListener {
     private final ImmutableListMultimap<KeyMapping, Runnable> bindings;
@@ -17,11 +17,16 @@ public final class KeyInputListener {
     }
 
     @SubscribeEvent
-    public void onKey(InputEvent.KeyInputEvent event) {
+    public void onKey(InputEvent.InteractionKeyMappingTriggered event) {
         this.bindings.asMap().entrySet().stream()
             .filter(e -> e.getKey().consumeClick())
             .flatMap(e -> e.getValue().stream())
             .forEach(Runnable::run);
+    }
+
+    @SubscribeEvent
+    public void registerKeyBinding(RegisterKeyMappingsEvent event) {
+        bindings.keySet().forEach(event::register);
     }
 
     public static Builder builder() {
@@ -89,7 +94,7 @@ public final class KeyInputListener {
         @Override
         public BindingBuilder key(String desc, IKeyConflictContext context, KeyModifier modifier, int keyCode) {
             KeyMapping binding = new KeyMapping(desc, context, modifier, InputConstants.Type.KEYSYM, keyCode, this.category);
-            ClientRegistry.registerKeyBinding(binding);
+//            ClientRegistry.registerKeyBinding(binding);
             return new BindingBuilder(this, binding);
         }
     }

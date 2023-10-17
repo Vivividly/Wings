@@ -10,7 +10,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,6 +23,7 @@ public final class FlightViews {
     }
 
     private static final CapabilityHolder<LivingEntity, FlightView, CapabilityHolder.State<LivingEntity, FlightView>> HOLDER = CapabilityHolder.create();
+    private static final Capability<FlightView> FLIGHT_VIEW = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static boolean has(LivingEntity player) {
         return HOLDER.state().has(player, null);
@@ -30,9 +33,15 @@ public final class FlightViews {
         return HOLDER.state().get(player, null);
     }
 
-    @CapabilityInject(FlightView.class)
-    static void inject(Capability<FlightView> capability) {
-        HOLDER.inject(capability);
+//    @CapabilityInject(FlightView.class)
+//    static void inject(Capability<FlightView> capability) {
+//        HOLDER.inject(capability);
+//    }
+
+    @SubscribeEvent
+    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        event.register(FlightView.class);
+        HOLDER.inject(FLIGHT_VIEW);
     }
 
     @SubscribeEvent

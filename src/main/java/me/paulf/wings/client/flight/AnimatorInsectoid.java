@@ -1,6 +1,6 @@
 package me.paulf.wings.client.flight;
 
-import me.paulf.wings.util.Mth;
+import me.paulf.wings.util.Maath;
 import net.minecraft.world.phys.Vec3;
 
 public final class AnimatorInsectoid implements Animator {
@@ -42,7 +42,7 @@ public final class AnimatorInsectoid implements Animator {
     }
 
     public Vec3 getRotation(float delta) {
-        return new Vec3(0.0D, Math.sin(Mth.lerp(this.prevFlapCycle, this.flapCycle, delta)) * 35.0D - 42.0D, 0.0D);
+        return new Vec3(0.0D, Math.sin(Maath.lerp(this.prevFlapCycle, this.flapCycle, delta)) * 35.0D - 42.0D, 0.0D);
     }
 
     @Override

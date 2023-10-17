@@ -37,7 +37,7 @@ public final class WingsHooksClient {
     public static void onTurn(Entity entity, float deltaYaw) {
         if (entity instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) entity;
-            float theta = Mth.wrapDegrees(living.yRot - living.yBodyRot);
+            float theta = Mth.wrapDegrees(living.getYRot() - living.yBodyRot);
             GetLivingHeadLimitEvent ev = GetLivingHeadLimitEvent.create(living);
             MinecraftForge.EVENT_BUS.post(ev);
             float limit = ev.getHardLimit();
@@ -62,7 +62,7 @@ public final class WingsHooksClient {
             if (player == null) {
                 return true;
             }
-            boolean fromMap = isMap(GetItemStackMainHand.invoke(mc.getItemInHandRenderer()));
+            boolean fromMap = isMap(GetItemStackMainHand.invoke(mc.getEntityRenderDispatcher().getItemInHandRenderer()));
             boolean toMap = isMap(player.getMainHandItem());
             if (fromMap || toMap) {
                 return fromMap != toMap;

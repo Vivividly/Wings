@@ -2,9 +2,9 @@ package me.paulf.wings.client.flight.state;
 
 import me.paulf.wings.client.flight.Animator;
 import me.paulf.wings.server.flight.Flight;
-import me.paulf.wings.util.Mth;
-import net.minecraft.world.entity.player.Player;
+import me.paulf.wings.util.Maath;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Consumer;
 
@@ -35,7 +35,7 @@ public abstract class State {
 
     private State getNext(Flight flight, double x, double y, double z, Player player) {
         if (flight.isFlying()) {
-            if (y < 0 && player.xRot >= this.getPitch(x, y, z)) {
+            if (y < 0 && player.getXRot() >= this.getPitch(x, y, z)) {
                 return this.createGlide();
             }
             return this.createLift();
@@ -47,7 +47,7 @@ public abstract class State {
     }
 
     private float getPitch(double x, double y, double z) {
-        return Mth.toDegrees((float) -Math.atan2(y, Mth.sqrt(x * x + z * z)));
+        return Maath.toDegrees((float) -Math.atan2(y, Math.sqrt(x * x + z * z)));
     }
 
     public final void beginAnimation(Animator animator) {

@@ -1,6 +1,7 @@
 package me.paulf.wings.server.flight;
 
 import me.paulf.wings.WingsMod;
+import me.paulf.wings.client.flight.FlightView;
 import me.paulf.wings.util.CapabilityHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -8,6 +9,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -25,6 +28,7 @@ public final class Flights {
     }
 
     private static final CapabilityHolder<Player, Flight, CapabilityHolder.State<Player, Flight>> HOLDER = CapabilityHolder.create();
+    private static final Capability<Flight> FLIGHT = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static boolean has(Player player) {
         return HOLDER.state().has(player, null);
@@ -34,9 +38,15 @@ public final class Flights {
         return HOLDER.state().get(player, null);
     }
 
-    @CapabilityInject(Flight.class)
-    static void inject(Capability<Flight> capability) {
-        HOLDER.inject(capability);
+//    @CapabilityInject(Flight.class)
+//    static void inject(Capability<Flight> capability) {
+//        HOLDER.inject(capability);
+//    }
+
+    @SubscribeEvent
+    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        event.register(Flight.class);
+        HOLDER.inject(FLIGHT);
     }
 
     public static void ifPlayer(Entity entity, BiConsumer<Player, Flight> action) {
@@ -78,11 +88,6 @@ public final class Flights {
                 get(event.getEntity()).ifPresent(newInstance -> newInstance.clone(oldInstance))
             );
         }
-    }
-
-    @SubscribeEvent
-    public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-
     }
 
     @SubscribeEvent

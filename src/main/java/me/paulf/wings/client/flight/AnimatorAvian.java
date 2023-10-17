@@ -1,7 +1,8 @@
 package me.paulf.wings.client.flight;
 
 import com.google.common.collect.ImmutableMap;
-import me.paulf.wings.util.Mth;
+import me.paulf.wings.util.Maath;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.levelgen.synth.SimplexNoise;
 
@@ -40,7 +41,7 @@ public final class AnimatorAvian implements Animator {
     }
 
     private float getFlapTime(float delta) {
-        return Mth.lerp(this.prevFlapCycle, this.flapCycle, delta);
+        return Maath.lerp(this.prevFlapCycle, this.flapCycle, delta);
     }
 
     @Override
@@ -131,9 +132,9 @@ public final class AnimatorAvian implements Animator {
             float pos = AnimatorAvian.this.getWeight(index + 1);
             float time = AnimatorAvian.this.getFlapTime(delta);
             float cycle = time - pos * 1.2F;
-            double x = (Math.sin(cycle + Mth.PI / 2.0D) - 1.0D) / 2.0D * 20.0D + (1.0D - pos) * 50.0D;
+            double x = (Math.sin(cycle + Maath.PI / 2.0D) - 1.0D) / 2.0D * 20.0D + (1.0D - pos) * 50.0D;
             double y = (Math.sin(cycle) * 20.0D + (1.0D - pos) * 14.0D) *
-                (1.0D - pos * (Math.min(Math.sin(cycle + Mth.PI), 0.0D) / 2.0D + 1.0D) * Math.sin(time));
+                (1.0D - pos * (Math.min(Math.sin(cycle + Maath.PI), 0.0D) / 2.0D + 1.0D) * Math.sin(time));
             return AnimatorAvian.this.restPosition.getWingRotation(index, delta).add(x, y, 4.0D);
         }
 
@@ -149,7 +150,7 @@ public final class AnimatorAvian implements Animator {
     }
 
     private final class GlideMovement implements Movement {
-        private final SimplexNoise noise = new SimplexNoise(new Random());
+        private final SimplexNoise noise = new SimplexNoise(RandomSource.create());
 
         private int time;
 
@@ -219,9 +220,9 @@ public final class AnimatorAvian implements Animator {
             float pos = AnimatorAvian.this.getWeight(index);
             float time = AnimatorAvian.this.getFlapTime(delta);
             float cycle = time - pos * 1.2F;
-            double x = (Math.sin(cycle + Mth.PI / 2.0D) - 1.0D) / 2.0D * 16.0D + 8.0D;
+            double x = (Math.sin(cycle + Maath.PI / 2.0D) - 1.0D) / 2.0D * 16.0D + 8.0D;
             double y = (Math.sin(cycle) * 26.0D + 12.0D) *
-                (1.0D - pos * (Math.min(Math.sin(cycle + Mth.PI), 0.0D) / 2.0D + 1.0D) * Math.sin(time));
+                (1.0D - pos * (Math.min(Math.sin(cycle + Maath.PI), 0.0D) / 2.0D + 1.0D) * Math.sin(time));
             return AnimatorAvian.this.restPosition.getWingRotation(index, delta).add(x, y, 0.0D);
         }
 
@@ -232,7 +233,7 @@ public final class AnimatorAvian implements Animator {
 
         @Override
         public float update() {
-            float flap = Mth.lerp(0.375F, 0.225F, (float) this.beginTime / this.beginDuration);
+            float flap = Maath.lerp(0.375F, 0.225F, (float) this.beginTime / this.beginDuration);
             if (this.beginTime < this.beginDuration) {
                 this.beginTime++;
             }
@@ -241,7 +242,7 @@ public final class AnimatorAvian implements Animator {
     }
 
     private final class FallMovement implements Movement {
-        private final SimplexNoise noise = new SimplexNoise(new Random());
+        private final SimplexNoise noise = new SimplexNoise(RandomSource.create());
 
         private final WingPose wing = WingPose.builder()
             .with(0, 30.0D, -23.0D, -50.0D)
@@ -301,11 +302,11 @@ public final class AnimatorAvian implements Animator {
         private Vec3 lerpRotation(int index, float delta, RotationGetter getter) {
             Vec3 startRot = getter.get(this.start, index, delta);
             Vec3 endRot = getter.get(this.end, index, delta);
-            float t = Mth.easeInOut(Mth.lerp(this.lastTime, this.time, delta) / this.duration);
+            float t = Maath.easeInOut(Maath.lerp(this.lastTime, this.time, delta) / this.duration);
             return new Vec3(
-                Mth.lerpDegrees(startRot.x, endRot.x, t),
-                Mth.lerpDegrees(startRot.y, endRot.y, t),
-                Mth.lerpDegrees(startRot.z, endRot.z, t)
+                Maath.lerpDegrees(startRot.x, endRot.x, t),
+                Maath.lerpDegrees(startRot.y, endRot.y, t),
+                Maath.lerpDegrees(startRot.z, endRot.z, t)
             );
         }
 
@@ -314,7 +315,7 @@ public final class AnimatorAvian implements Animator {
             this.lastTime = this.time;
             float flapStart = this.start.update();
             float flapEnd = this.end.update();
-            float flap = Mth.lerp(flapStart, flapEnd, (float) this.time / this.duration);
+            float flap = Maath.lerp(flapStart, flapEnd, (float) this.time / this.duration);
             if (this.time < this.duration) {
                 this.time++;
             } else if (this.isActive) {

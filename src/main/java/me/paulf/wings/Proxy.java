@@ -32,8 +32,8 @@ public abstract class Proxy {
     }
 
     protected void setup(FMLCommonSetupEvent event) {
-        CapabilityManager.INSTANCE.register(Flight.class, SimpleStorage.ofVoid(), FlightDefault::new);
-        CapabilityManager.INSTANCE.register(InSomniable.class, SimpleStorage.ofVoid(), InSomniable::new);
+//        CapabilityManager.INSTANCE.register(Flight.class, SimpleStorage.ofVoid(), FlightDefault::new);
+//        CapabilityManager.INSTANCE.register(InSomniable.class, SimpleStorage.ofVoid(), InSomniable::new);
         event.enqueueWork(() -> {
             BiConsumer<ItemLike, RegistryObject<Item>> reg = (item, obj) -> {
                 BrewingRecipeRegistry.addRecipe(

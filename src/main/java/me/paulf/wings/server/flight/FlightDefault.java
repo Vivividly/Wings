@@ -5,13 +5,13 @@ import me.paulf.wings.WingsMod;
 import me.paulf.wings.server.apparatus.FlightApparatus;
 import me.paulf.wings.server.effect.WingsEffects;
 import me.paulf.wings.util.CubicBezier;
-import me.paulf.wings.util.Mth;
+import me.paulf.wings.util.Maath;
 import me.paulf.wings.util.NBTSerializer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -91,7 +91,7 @@ public final class FlightDefault implements Flight {
 
     @Override
     public float getFlyingAmount(float delta) {
-        return FLY_AMOUNT_CURVE.eval(Mth.lerp(this.getPrevTimeFlying(), this.getTimeFlying(), delta) / MAX_TIME_FLYING);
+        return FLY_AMOUNT_CURVE.eval(Maath.lerp(this.getPrevTimeFlying(), this.getTimeFlying(), delta) / MAX_TIME_FLYING);
     }
 
     private void setPrevTimeFlying(int prevTimeFlying) {
@@ -130,20 +130,20 @@ public final class FlightDefault implements Flight {
         if (player.isEffectiveAi()) {
             if (this.isFlying()) {
                 float speed = (float) Mth.clampedLerp(MIN_SPEED, MAX_SPEED, player.zza);
-                float elevationBoost = Mth.transform(
-                    Math.abs(player.xRot),
+                float elevationBoost = Maath.transform(
+                    Math.abs(player.getXRot()),
                     45.0F, 90.0F,
                     1.0F, 0.0F
                 );
-                float pitch = -Mth.toRadians(player.xRot - PITCH_OFFSET * elevationBoost);
-                float yaw = -Mth.toRadians(player.yRot) - Mth.PI;
+                float pitch = -Maath.toRadians(player.getXRot() - PITCH_OFFSET * elevationBoost);
+                float yaw = -Maath.toRadians(player.getYRot()) - Mth.PI;
                 float vxz = -Mth.cos(pitch);
                 float vy = Mth.sin(pitch);
                 float vz = Mth.cos(yaw);
                 float vx = Mth.sin(yaw);
                 player.setDeltaMovement(player.getDeltaMovement().add(
                     vx * vxz * speed,
-                    vy * speed + Y_BOOST * (player.xRot > 0.0F ? elevationBoost : 1.0D),
+                    vy * speed + Y_BOOST * (player.getXRot() > 0.0F ? elevationBoost : 1.0D),
                     vz * vxz * speed
                 ));
             }

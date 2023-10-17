@@ -2,8 +2,8 @@ package me.paulf.wings.util;
 
 import net.minecraft.util.Mth;
 
-public final class Mth {
-    private Mth() {
+public final class Maath {
+    private Maath() {
     }
 
     public static final float PI = (float) Math.PI;

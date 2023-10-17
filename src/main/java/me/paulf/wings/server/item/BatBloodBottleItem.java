@@ -38,17 +38,17 @@ public class BatBloodBottleItem extends Item {
         if (living instanceof Player) {
             Player player = (Player) living;
             player.awardStat(Stats.ITEM_USED.get(this));
-            if (!player.abilities.instabuild) {
+            if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
         }
         if (stack.isEmpty()) {
             return new ItemStack(Items.GLASS_BOTTLE);
         }
-        if (living instanceof Player && !((Player) living).abilities.instabuild) {
+        if (living instanceof Player && !((Player) living).getAbilities().instabuild) {
             ItemStack emptyBottle = new ItemStack(Items.GLASS_BOTTLE);
             Player player = (Player) living;
-            if (!player.inventory.add(emptyBottle)) {
+            if (!player.getInventory().add(emptyBottle)) {
                 player.drop(emptyBottle, false);
             }
         }
@@ -67,7 +67,7 @@ public class BatBloodBottleItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        return ItemUtils.useDrink(world, player, hand);
+        return ItemUtils.startUsingInstantly(world, player, hand);
     }
 
     public static boolean removeWings(ServerPlayer player) {

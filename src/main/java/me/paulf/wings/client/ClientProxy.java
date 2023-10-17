@@ -25,7 +25,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.common.MinecraftForge;
@@ -89,17 +89,17 @@ public final class ClientProxy extends Proxy {
             WingForm.register(WingsMod.MONARCH_BUTTERFLY_WINGS.get(), this.createInsectoidWings(WingsMod.WINGS_REGISTRY.get().getKey(WingsMod.MONARCH_BUTTERFLY_WINGS.get())));
             WingForm.register(WingsMod.SLIME_WINGS.get(), this.createInsectoidWings(WingsMod.WINGS_REGISTRY.get().getKey(WingsMod.SLIME_WINGS.get())));
         });
-        modBus.<ColorHandlerEvent.Item>addListener(e -> {
-            e.getItemColors().register((stack, pass) -> pass == 0 ? 0x9B172D : 0xFFFFFF, WingsItems.BAT_BLOOD_BOTTLE.get());
+        modBus.<RegisterColorHandlersEvent.Item>addListener(e -> {
+            e.register((stack, pass) -> pass == 0 ? 0x9B172D : 0xFFFFFF, WingsItems.BAT_BLOOD_BOTTLE.get());
         });
     }
 
     @Override
     protected void setup(FMLCommonSetupEvent event) {
         super.setup(event);
-        CapabilityManager.INSTANCE.register(FlightView.class, SimpleStorage.ofVoid(), () -> {
-            throw new UnsupportedOperationException();
-        });
+//        CapabilityManager.INSTANCE.register(FlightView.class, SimpleStorage.ofVoid(), () -> {
+//            throw new UnsupportedOperationException();
+//        });
     }
 
     @Override

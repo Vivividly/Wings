@@ -12,15 +12,16 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.util.UUID;
 
@@ -32,7 +33,7 @@ public final class DebugFlightAnimation {
     private static State state = new DisabledState();
 
     @SubscribeEvent
-    public static void init(ModelRegistryEvent event) {
+    public static void init(ModelEvent.RegisterAdditional event) {
         state = state.init();
     }
 
@@ -77,7 +78,8 @@ public final class DebugFlightAnimation {
                 Minecraft mc = Minecraft.getInstance();
                 ClientLevel world = mc.level;
                 if (world != null && (this.player == null || this.player.level != world)) {
-                    this.player = new RemotePlayer(world, PROFILE) {{
+                    //may need to change profile public key to something valid idk
+                    this.player = new RemotePlayer(world, PROFILE, null) {{
                         this.getEntityData().set(DATA_PLAYER_MODE_CUSTOMISATION, (byte) 0xFF);
                     }};
                     this.player.setId(-this.player.getId());
@@ -97,7 +99,7 @@ public final class DebugFlightAnimation {
         }
 
         @SubscribeEvent
-        public void render(RenderWorldLastEvent event) {
+        public void render(RenderLevelStageEvent event) {
             Minecraft mc = Minecraft.getInstance();
             if (mc.level != null && mc.player != null && mc.cameraEntity != null) {
                 EntityRenderDispatcher manager = mc.getEntityRenderDispatcher();
@@ -108,10 +110,10 @@ public final class DebugFlightAnimation {
                     this.player.getY() - projectedView.y(),
                     this.player.getZ() - projectedView.z(),
                     0.0F,
-                    event.getPartialTicks(),
-                    event.getMatrixStack(),
+                    event.getPartialTick(),
+                    event.getPoseStack(),
                     mc.renderBuffers().bufferSource(),
-                    manager.getPackedLightCoords(this.player, event.getPartialTicks())
+                    manager.getPackedLightCoords(this.player, event.getPartialTick())
                 );
             }
         }

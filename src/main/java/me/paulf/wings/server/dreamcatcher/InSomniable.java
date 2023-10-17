@@ -2,14 +2,14 @@ package me.paulf.wings.server.dreamcatcher;
 
 import me.paulf.wings.server.item.WingsItems;
 import me.paulf.wings.util.NBTSerializer;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.function.IntConsumer;
 
@@ -77,7 +77,7 @@ public final class InSomniable {
         public State onPlay(Level world, Player player, BlockPos pos, int note) {
             if (note >= 6 && note <= 14 && ((this.state = (this.state | this.mask[note - 6]) << 1) & 0x20000) == 0) {
                 ItemStack stack = new ItemStack(WingsItems.ANGEL_WINGS_BOTTLE.get());
-                stack.setHoverName(new TranslatableComponent(this.members[world.random.nextInt(this.members.length)]));
+                stack.setHoverName(Component.translatable(this.members[world.random.nextInt(this.members.length)]));
                 ItemEntity entity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1.25D, pos.getZ() + 0.5D, stack);
                 entity.setDefaultPickUpDelay();
                 world.addFreshEntity(entity);
@@ -128,7 +128,7 @@ public final class InSomniable {
         @Override
         public InSomniable deserialize(CompoundTag compound) {
             State state;
-            if (compound.contains(SEARCH_STATE, Constants.NBT.TAG_INT)) {
+            if (compound.contains(SEARCH_STATE, Tag.TAG_INT)) {
                 state = new SearchState(compound.getInt(SEARCH_STATE));
             } else {
                 state = InSomniacState.INSTANCE;

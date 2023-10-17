@@ -9,18 +9,18 @@ import me.paulf.wings.server.item.BatBloodBottleItem;
 import me.paulf.wings.server.item.WingsBottleItem;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Collection;
 
-import static net.minecraft.command.Commands.argument;
-import staticnet.minecraft.commands.Commandss.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class WingsCommand {
-    private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(new TranslatableComponent("commands.wings.give.failed"));
+    private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.wings.give.failed"));
 
-    private static final SimpleCommandExceptionType ERROR_TAKE_FAILED = new SimpleCommandExceptionType(new TranslatableComponent("commands.wings.take.failed"));
+    private static final SimpleCommandExceptionType ERROR_TAKE_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.wings.take.failed"));
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("wings").requires(cs -> cs.hasPermission(2))
@@ -47,9 +47,9 @@ public class WingsCommand {
             throw ERROR_GIVE_FAILED.create();
         }
         if (targets.size() == 1) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("commands.wings.give.success.single", targets.iterator().next().getDisplayName()), true);
+            ctx.getSource().sendSuccess(Component.translatable("commands.wings.give.success.single", targets.iterator().next().getDisplayName()), true);
         } else {
-            ctx.getSource().sendSuccess(new TranslatableComponent("commands.wings.give.success.multiple", targets.size()), true);
+            ctx.getSource().sendSuccess(Component.translatable("commands.wings.give.success.multiple", targets.size()), true);
         }
         return count;
     }
@@ -66,9 +66,9 @@ public class WingsCommand {
             throw ERROR_TAKE_FAILED.create();
         }
         if (targets.size() == 1) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("commands.wings.take.success.single", targets.iterator().next().getDisplayName()), true);
+            ctx.getSource().sendSuccess(Component.translatable("commands.wings.take.success.single", targets.iterator().next().getDisplayName()), true);
         } else {
-            ctx.getSource().sendSuccess(new TranslatableComponent("commands.wings.take.success.multiple", targets.size()), true);
+            ctx.getSource().sendSuccess(Component.translatable("commands.wings.take.success.multiple", targets.size()), true);
         }
         return count;
     }
@@ -86,9 +86,9 @@ public class WingsCommand {
             throw ERROR_TAKE_FAILED.create();
         }
         if (targets.size() == 1) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("commands.wings.take.success.single", targets.iterator().next().getDisplayName()), true);
+            ctx.getSource().sendSuccess(Component.translatable("commands.wings.take.success.single", targets.iterator().next().getDisplayName()), true);
         } else {
-            ctx.getSource().sendSuccess(new TranslatableComponent("commands.wings.take.success.multiple", targets.size()), true);
+            ctx.getSource().sendSuccess(Component.translatable("commands.wings.take.success.multiple", targets.size()), true);
         }
         return count;
     }

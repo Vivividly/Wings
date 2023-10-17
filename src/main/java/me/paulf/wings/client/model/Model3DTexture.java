@@ -2,7 +2,7 @@ package me.paulf.wings.client.model;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Direction;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

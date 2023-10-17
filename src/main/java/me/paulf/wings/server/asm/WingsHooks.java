@@ -39,11 +39,11 @@ public final class WingsHooks {
         float hLimit = ev.getHardLimit();
         float sLimit = ev.getSoftLimit();
         float theta = Mth.clamp(
-            Mth.wrapDegrees(living.yRot - living.yBodyRot),
+            Mth.wrapDegrees(living.getYRot() - living.yBodyRot),
             -hLimit,
             hLimit
         );
-        living.yBodyRot = living.yRot - theta;
+        living.yBodyRot = living.getYRot() - theta;
         if (theta * theta > sLimit * sLimit) {
             living.yBodyRot += theta * 0.2F;
         }

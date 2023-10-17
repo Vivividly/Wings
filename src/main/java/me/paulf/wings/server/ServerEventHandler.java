@@ -4,17 +4,12 @@ import me.paulf.wings.WingsMod;
 import me.paulf.wings.server.asm.GetLivingHeadLimitEvent;
 import me.paulf.wings.server.asm.PlayerFlightCheckEvent;
 import me.paulf.wings.server.asm.PlayerFlownEvent;
-import me.paulf.wings.server.command.WingsArgument;
 import me.paulf.wings.server.command.WingsCommand;
 import me.paulf.wings.server.flight.Flight;
 import me.paulf.wings.server.flight.Flights;
 import me.paulf.wings.server.item.WingsItems;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.Entity;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.stats.Stats;
@@ -22,7 +17,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -32,11 +26,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Collection;
-
-import static net.minecraft.command.Commands.argument;
-import staticnet.minecraft.commands.Commandss.literal;
-
 @Mod.EventBusSubscriber(modid = WingsMod.ID)
 public final class ServerEventHandler {
     private ServerEventHandler() {
@@ -44,7 +33,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public static void onPlayerEntityInteract(PlayerInteractEvent.EntityInteract event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         InteractionHand hand = event.getHand();
         ItemStack stack = player.getItemInHand(hand);
         if (event.getTarget() instanceof Bat && stack.getItem() == Items.GLASS_BOTTLE) {
@@ -57,7 +46,7 @@ public final class ServerEventHandler {
                 1.0F
             );
             ItemStack destroyed = stack.copy();
-            if (!player.abilities.instabuild) {
+            if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }
             player.awardStat(Stats.ITEM_USED.get(Items.GLASS_BOTTLE));
@@ -65,7 +54,7 @@ public final class ServerEventHandler {
             if (stack.isEmpty()) {
                 ForgeEventFactory.onPlayerDestroyItem(player, destroyed, hand);
                 player.setItemInHand(hand, batBlood);
-            } else if (!player.inventory.add(batBlood)) {
+            } else if (!player.getInventory().add(batBlood)) {
                 player.drop(batBlood, false);
             }
             event.setCancellationResult(InteractionResult.SUCCESS);
@@ -94,20 +83,20 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
-        Flights.ifPlayer(event.getEntityLiving(), (player, flight) ->
+        Flights.ifPlayer(event.getEntity(), (player, flight) ->
             flight.setIsFlying(false, Flight.PlayerSet.ofAll())
         );
     }
 
     @SubscribeEvent
     public static void onPlayerFlightCheck(PlayerFlightCheckEvent event) {
-        Flights.get(event.getPlayer()).filter(Flight::isFlying)
+        Flights.get(event.getEntity()).filter(Flight::isFlying)
             .ifPresent(flight -> event.setFlying());
     }
 
     @SubscribeEvent
     public static void onPlayerFlown(PlayerFlownEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         Flights.get(player).ifPresent(flight -> {
             flight.onFlown(player, event.getDirection());
         });
@@ -115,7 +104,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public static void onGetLivingHeadLimit(GetLivingHeadLimitEvent event) {
-        Flights.ifPlayer(event.getEntityLiving(), (player, flight) -> {
+        Flights.ifPlayer(event.getEntity(), (player, flight) -> {
             if (flight.isFlying()) {
                 event.setHardLimit(50.0F);
                 event.disableSoftLimit();

@@ -30,22 +30,23 @@ public final class CapabilityProviders {
         return new NonSerializingSingleBuilderImpl<>(capability, instance);
     }
 
-    public static <T> SingleBuilder<T> builder(Capability<T> capability) {
-        return new NonSerializingSingleBuilderImpl<>(capability, capability.getDefaultInstance())
-            .serializedBy(new NBTSerializer<T, Tag>() {
-                @Override
-                public Tag serialize(T instance) {
-                    return capability.writeNBT(instance, null);
-                }
-
-                @Override
-                public T deserialize(Tag compound) {
-                    T instance = capability.getDefaultInstance();
-                    capability.readNBT(instance, null, compound);
-                    return instance;
-                }
-            });
-    }
+    //todo: fix?
+//    public static <T> SingleBuilder<T> builder(Capability<T> capability) {
+//        return new NonSerializingSingleBuilderImpl<>(capability, capability.getDefaultInstance())
+//            .serializedBy(new NBTSerializer<T, Tag>() {
+//                @Override
+//                public Tag serialize(T instance) {
+//                    return capability.writeNBT(instance, null);
+//                }
+//
+//                @Override
+//                public T deserialize(Tag compound) {
+//                    T instance = capability.getDefaultInstance();
+//                    capability.readNBT(instance, null, compound);
+//                    return instance;
+//                }
+//            });
+//    }
 
     public static CompositeBuilder builder() {
         return new CompositeBuilderImpl();

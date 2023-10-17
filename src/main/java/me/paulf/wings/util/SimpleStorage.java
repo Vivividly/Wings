@@ -7,7 +7,7 @@ import net.minecraftforge.common.capabilities.Capability;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-
+/*
 public final class SimpleStorage<T> implements Capability.IStorage<T> {
     private final Function<T, CompoundTag> serializer;
 
@@ -37,3 +37,4 @@ public final class SimpleStorage<T> implements Capability.IStorage<T> {
         return new SimpleStorage<>(serializer, deserializer);
     }
 }
+*/
